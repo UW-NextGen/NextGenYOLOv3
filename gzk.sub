@@ -1,0 +1,32 @@
+universe = vanilla
++WantFlocking = true
+
+# the script that will be run when the job starts
+executable = run.sh
+
+# include the cluster id and process id that are set at runtime
+log = $(Cluster)_$(Process).log
+error = $(Cluster)_$(Process).err
+output = $(Cluster)_$(Process).out
+
+# these files (code, data, args) get transferred from the submit node to the server on which the program is executing
+transfer_input_files = Miniconda3-latest-Linux-x86_64.sh, libc.tar.gz, my_tensorflow_program.py,defectimage1.jpg, yolo3.zip
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+
+# specify the resources required
+request_cpus = 1
+request_gpus = 1
+request_memory = 8GB
+request_disk = 8GB
+
+requirements = ((OpSysMajorVer==6) || (OpSysMajorVer==7)) && (TARGET.CUDADeviceName=="GeForce GTX 1080")
+
+# Copy environment variables that are set dynamically by HTCondor
+environment = "cluster=$(Cluster) process=$(Process) runningon=$$(Name)"
+getenv=true
+
+# this is how many jobs to queue
+queue 1
+
+#END
